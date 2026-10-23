@@ -1,4 +1,5 @@
 // protoのバージョンの宣言
+
 syntax = "proto3";
 
 // protoファイルから自動生成させるGoのコードの置き先
