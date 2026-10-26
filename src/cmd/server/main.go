@@ -12,6 +12,7 @@ import (
 	hellopb "myapp/pkg/grpc"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
 
 type myServer struct {
@@ -42,13 +43,16 @@ func main() {
 	// 3. gRPCサーバーにGreetingServiceを登録
 	hellopb.RegisterGreetingServiceServer(s, NewMyServer())
 
-	// 4. 作成したgRPCサーバーを、8080番ポートで稼働させる
+	// 4. サーバーリフレクションの設定
+	reflection.Register(s)
+
+	// 5. 作成したgRPCサーバーを、8080番ポートで稼働させる
 	go func() {
 		log.Printf("start gRPC server port: %v", port)
 		s.Serve(listener)
 	}()
 
-	// 5. Ctrl+Cが入力されたらGraceful shutdownされるようにする
+	// 6. Ctrl+Cが入力されたらGraceful shutdownされるようにする
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)
 	<-quit
